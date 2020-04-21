@@ -1,2 +1,5 @@
 config.inc
+.swp
+.swo
 .*.swp
+.gitconfig
