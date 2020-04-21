@@ -10,11 +10,14 @@ Why? I found all the timers out there to be as much of a pain as entering time i
 
 1. Clone this github, e.g.
 
-       git clone https://github.com/poolpog/nag-timer /Users/jsilverman/bin/nag-timer
+       INSTALL_DIR=/Users/jsilverman/bin/nag-timer
+       git clone https://github.com/poolpog/nag-timer ${INSTALL_DIR}
 
-2. Run make-crontab.sh and pipe to crontab; this adds timer entry for 15 mins
+2. Copy ${INSTALL_DIR}/config.inc.dist to ${INSTALL_DIR}/config.inc
 
-       /Users/jsilverman/bin/nag-timer/make-crontab.sh  2>/dev/null | crontab  -
+3.Run make-crontab.sh and pipe to crontab; this adds timer entry for 15 mins
+
+       ${INSTALL_DIR}/make-crontab.sh  2>/dev/null | crontab  -
 
 # TO DO
 
