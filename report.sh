@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
+
+# for now, use like this:
+#
+#    ./report.sh  | column -s',' -t | grep 2020-04-23
+#
 set -x
 
 cd $( dirname $0 )
 CWD=$( pwd -P )
 source "${CWD}/config.inc"
 
-if ! jq --version >/dev/null 2>&1; then
+if ! ( jq --version >/dev/null 2>&1 ) ; then
     echo "ERROR: Reports need jq installed"
     echo "Example (using Homebrew):"
     echo
@@ -20,7 +25,7 @@ DAY="${2:-ALL}"
 set +x
 if [[ "${FORMAT}"  ==  "CSV" ]]; then
     echo "Date,Activity,Time elapsed"
-    jq -r -s
+    jq -r -s \
         '.[] | "\(.time_end),\(.activity),\( (( .time_end_s| tonumber )  - ( .time_start_s| tonumber ) ) / 60 ) min"' \
         "${TRACKER_FILE}"  | \
         sort -n
