@@ -6,7 +6,7 @@ CWD=$( pwd -P )
 source "${CWD}/config.inc"
 
 read -r -d '' OSASCRIPT <<EOF
-   tell application "System Events"
+   tell application "Finder"
    activate
    set retval to text returned of (display dialog "What were you just working on?" default answer "" with title "NAGTRACKER")
    return retval

@@ -12,8 +12,8 @@ fi
 
 # Kill existing trackers and have them output the default tracker value
 osascript  -e "repeat" \
-    -e 'tell application "System Events" to tell process "System Events"' \
-    -e 'click button "Ok" of window "NAGTRACKER"' \
+    -e 'tell application "Finder" to tell process "System Events"' \
+    -e 'click button "Cancel" of window "NAGTRACKER"' \
     -e 'end tell' \
     -e "end repeat"
 
