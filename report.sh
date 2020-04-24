@@ -5,14 +5,29 @@ cd $( dirname $0 )
 CWD=$( pwd -P )
 source "${CWD}/config.inc"
 
-WHICH="${1:-CSV}"
-SUB_PATH=$( echo "${CWD}/track.sh" | sed 's/\//\\\//g' )
+if ! jq --version >/dev/null 2>&1; then
+    echo "ERROR: Reports need jq installed"
+    echo "Example (using Homebrew):"
+    echo
+    echo "brew install jq"
+    echo
+    exit 1
+fi
+
+FORMAT="${1:-CSV}"
+DAY="${2:-ALL}"
 
 set +x
-if [[ "${WHICH}"  ==  "CSV" ]]; then
+if [[ "${FORMAT}"  ==  "CSV" ]]; then
     echo "Date,Activity,Time elapsed"
-    jq -r -s  '.[]|"\(.time_end),\(.activity),\( (( .time_end_s| tonumber )  - ( .time_start_s| tonumber ) ) / 60 ) min"'  "${TRACKER_FILE}"  | sort -n
+    jq -r -s
+        '.[] | "\(.time_end),\(.activity),\( (( .time_end_s| tonumber )  - ( .time_start_s| tonumber ) ) / 60 ) min"' \
+        "${TRACKER_FILE}"  | \
+        sort -n
 else
-    jq -r -s  '.[]|"Date:\(.time_end)|:Activity:\(.activity)|Time elapsed: \( (( .time_end_s| tonumber )  - ( .time_start_s| tonumber ) ) / 60 ) min"'  "${TRACKER_FILE}"  | sort -n
+    jq -r -s \
+        '.[] | "Date:\(.time_end)|:Activity:\(.activity)|Time elapsed: \( (( .time_end_s| tonumber )  - ( .time_start_s| tonumber ) ) / 60 ) min"' \
+        "${TRACKER_FILE}"  | \
+        sort -n
 fi
 

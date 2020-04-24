@@ -3,3 +3,5 @@ config.inc
 .swo
 .*.swp
 .gitconfig
+reports/*.txt
+reports/*.csv
