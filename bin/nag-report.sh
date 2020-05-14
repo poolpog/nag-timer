@@ -8,7 +8,7 @@ set -x
 
 cd $( dirname $0 )
 CWD=$( pwd -P )
-source "${CWD}/config.inc"
+source "${CWD}/../lib/config.inc"
 
 if ! ( jq --version >/dev/null 2>&1 ) ; then
     echo "ERROR: Reports need jq installed"

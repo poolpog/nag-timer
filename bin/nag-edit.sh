@@ -7,7 +7,7 @@ set -x
 
 cd $( dirname $0 )
 CWD=$( pwd -P )
-source "${CWD}/config.inc"
+source "${CWD}/../lib/config.inc"
 
 if [[ -z "${EDITOR}" ]]; then
     EDITOR="vim"

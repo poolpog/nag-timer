@@ -3,7 +3,7 @@ set -x
 
 cd $( dirname $0 )
 CWD=$( pwd -P )
-source "${CWD}/config.inc"
+source "${CWD}/../lib/config.inc"
 
 read -r -d '' OSASCRIPT <<EOF
    tell application "Finder"
