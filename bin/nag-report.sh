@@ -4,11 +4,13 @@
 #
 #    ./report.sh  | column -s',' -t | grep 2020-04-23
 #
-set -x
+if [[ "${DEBUG}" ]]; then
+    set -x
+fi
 
 cd $( dirname $0 )
 CWD=$( pwd -P )
-source "${CWD}/../lib/config.inc"
+source "${CWD}/../lib/common.sh"
 
 if ! ( jq --version >/dev/null 2>&1 ) ; then
     echo "ERROR: Reports need jq installed"

@@ -2,3 +2,4 @@
 DATE_FMT="%Y-%m-%dT%H:%M:%S%z"
 DEFAULT_ACTIVITY="Idle"
 TRACKER_FILE="${HOME}/.nag_tracker"
+NAG_TIMEOUT=120

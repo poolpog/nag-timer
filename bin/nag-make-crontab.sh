@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
+if [[ "${DEBUG}" ]]; then
+    set -x
+fi
 
 cd $( dirname $0 )
 CWD=$( pwd -P )
-source "${CWD}/../lib/config.inc"
+source "${CWD}/../lib/common.sh"
 
 WHICH="${1:-CRON}"
 SUB_PATH=$( echo "${CWD}/nag-track.sh" | sed 's/\//\\\//g' )
@@ -11,11 +14,9 @@ if [[ "${WHICH}"  ==  "LAUNCHCTL" ]]; then
     sed 's/PATH_TO_NAG_TIMER/'"${SUB_PATH}"'/' nag-launchctl-template.plist
 else
     # This isn't perfect; it doesn't account for crontab variables very well
-    OLD="$( crontab -l )"
-    NEW="$( sed 's/PATH_TO_NAG_TIMER/ '"${SUB_PATH}"' /' ../lib/crontab.txt )"
-    CRON_VARS="$( printf "%s\n%s\n" "${OLD}" "${NEW}" | grep  '=' | sort | uniq )"
-    CRON_ENTRIES="$( printf "%s\n%s\n" "${OLD}" "${NEW}" | grep -v '=' | sort | uniq )"
+    CRONTAB="$( sed 's/PATH_TO_NAG_TIMER/ '"${SUB_PATH}"' /' ../lib/crontab.txt )"
     echo "${CRON_VARS}"
     echo "${CRON_ENTRIES}"
+    echo "${CRONTAB}"
 fi
 
