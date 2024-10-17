@@ -1,36 +1,59 @@
 #!/usr/bin/env bash
-set -x
+if [[ "${DEBUG}" ]]; then
+    set -x
+fi
 
 cd $( dirname $0 )
 CWD=$( pwd -P )
-source "${CWD}/../lib/config.inc"
-
-read -r -d '' OSASCRIPT <<EOF
-   tell application "Finder"
-   activate
-   set retval to text returned of (display dialog "What were you just working on?" default answer "" with title "NAGTRACKER")
-   return retval
-   end tell
-EOF
+source "${CWD}/../lib/common.sh"
 
 ACTIVITY="${DEFAULT_ACTIVITY}"
 
-RETVAL=$(osascript -e "${OSASCRIPT}");
-if [[ "$?" != 0 ]]; then
-    ACTIVITY="TRACKER CANCELLED"
-elif [[ -n "${RETVAL}" ]]; then
-    ACTIVITY="${RETVAL}"
+function retrieve_value {
+    RETVAL="ERROR: No value provided"
+    if [[ ${OS} == "Darwin" ]]; then
+        read -r -d '' RETVAL <<EOF
+           tell application "Finder"
+           activate
+           set retval to text returned of (display dialog "What were you just working on?" default answer "" with title "NAGTRACKER")
+           return retval
+           end tell
+EOF
+    elif [[ ${OS} == "Linux" ]]; then
+        # TODO: this needs to detect the display
+        export DISPLAY=:1
+        RETVAL=$(zenity --timeout=$(( NAG_TIMEOUT )) --entry --title="NAGTRACKER" --text="What were you just working on?")
+    fi
+    if [[ "$?" != 0 ]]; then
+        RETVAL="TRACKER CANCELLED"
+    fi
+    echo -n "${RETVAL}"
+}
+
+function which_fifteen {
+    NOW_H=$( date +%H )
+    NOW_M=$( date +%M )
+    THIS_QUARTER=""
+    for QUARTER in 15 30 45 60 ; do
+        WHICH=$(( QUARTER - NOW_M ))
+        if [[ ${WHICH} -lt 15 && ${WHICH} -ge 0 ]]; then
+            THIS_QUARTER=${QUARTER}
+        fi
+    done
+    echo ${THIS_QUARTER}
+}
+
+NAG_VALUE=$(retrieve_value)
+if [[ -n "${NAG_VALUE}" ]]; then
+    ACTIVITY="${NAG_VALUE}"
 fi
 
-TIME_END_S=$(  date +%s )
-TIME_START_S=$(( TIME_END_S - ( 15 * 60 ) ))
-TIME_START=$(  date  -r  "${TIME_START_S}"  "+${DATE_FMT}"  )
-TIME_END=$(    date  -r  ${TIME_END_S}      "+${DATE_FMT}"  )
+WHICH_QUARTER=$( which_fifteen )
+TIME_START="${NOW_DAY}:$(( WHICH_QUARTER - 15 )):00"
+TIME_END="${NOW_DAY}:$(( WHICH_QUARTER )):00"
 
 cat <<EOF
 {
-    "time_start_s": "${TIME_START_S}",
-    "time_end_s": "${TIME_END_S}",
     "time_start": "${TIME_START}",
     "time_end": "${TIME_END}",
     "activity": "${ACTIVITY}"

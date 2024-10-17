@@ -1,1 +1,6 @@
-0,15,30,45 * * * * PATH_TO_NAG_TIMER
+#every minute
+* * * * * PATH_TO_NAG_TIMER
+#every five minutes
+*/5 * * * * PATH_TO_NAG_TIMER
+#every fifteen minutes
+*/15 * * * * PATH_TO_NAG_TIMER
