@@ -20,6 +20,8 @@ function retrieve_value {
            end tell
 EOF
     elif [[ ${OS} == "Linux" ]]; then
+        # TODO: this needs to detect the display
+        export DISPLAY=:1
         RETVAL=$(zenity --timeout=$(( NAG_TIMEOUT )) --entry --title="NAGTRACKER" --text="What were you just working on?")
     fi
     if [[ "$?" != 0 ]]; then

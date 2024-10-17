@@ -22,7 +22,10 @@ function kill_existing {
             -e 'end tell' \
             -e "end repeat"
     elif [[ ${OS} == "Linux" ]]; then
-        kill $( ps -ef | grep '[z]enity.*NAGTRACKER' | awk '{print $2}' )
+        PID=$( ps -ef | grep '[z]enity.*NAGTRACKER' | awk '{print $2}' )
+        if [[ -n "${PID}" ]]; then
+            kill ${PID}
+        fi
     fi
 }
 
